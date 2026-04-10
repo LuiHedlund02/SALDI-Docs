@@ -1,26 +1,34 @@
-# SALDI Docs
+# SALDI
 
-This repository contains documentation for the SALDI project.
+SALDI is a free Danish accounting system for bookkeeping, invoicing, inventory, purchasing, production, bookings, and integrations. This repository contains the application codebase and the supporting documentation set.
 
-SALDI is a Danish accounting and ERP system covering bookkeeping, invoicing, purchasing, inventory, production, bookings, and integrations.
+## Key module areas
 
-## Start here
-- [`docs/README.md`](docs/README.md) — main documentation hub
-- [`INSTALLATION.txt`](INSTALLATION.txt) — legacy/current install reference from the project
-- [`docs/getting-started/installation.md`](docs/getting-started/installation.md) — structured installation guide
-- [`docs/architecture/module-map.md`](docs/architecture/module-map.md) — high-level codebase and module map
+- `admin/` — administration, setup, licensing, backups, restore
+- `finans/`, `debitor/`, `kreditor/` — core accounting, AR, and AP flows
+- `lager/`, `produktion/` — stock, goods, and production workflows
+- `booking/`, `rental/`, `sager/`, `projectManager/` — operational business modules
+- `api/`, `restapi/`, `soapserver/`, `soapklient/`, `sync_shop/`, `dandomain/` — integration surfaces
+- `systemdata/`, `includes/`, `stdFunc/` — shared runtime, configuration, and utilities
 
-## Documentation structure
-- [`docs/`](docs/) — technical documentation for maintainers, integrators, and deployers
-- [`doc/`](doc/) — historical release notes, legacy HTML/PDF reference material
-- [`guides/`](guides/) — user-facing PDF guides
-- [`LAESMIG.txt`](LAESMIG.txt) — historical Danish entry/readme document
+## Installation
 
-## Main documentation areas
-- Platform: shared runtime, admin, index shell, frontend assets, report/document flows
-- Modules: debitor, finans, lager, kreditor, systemdata, produktion, rental, booking, sager
-- Integrations: REST API, API v2, SOAP, webshop sync, remote booking, ProjectManager
-- Operations: installation, deployment, configuration, backup/restore, releases, verification
+Start with [`INSTALLATION.txt`](INSTALLATION.txt) for the current setup instructions.
+For the documentation-led install flow, see [`docs/getting-started/installation.md`](docs/getting-started/installation.md).
 
-## Notes
-This repository is documentation-focused. Some documents describe modules and paths that live in the main SALDI application repository.
+## Documentation
+
+- [`docs/`](docs/) — current technical documentation and the preferred source of truth for maintainers
+- [`doc/`](doc/) — legacy release notes, historical reference material, and older HTML/PDF assets
+- [`guides/`](guides/) — user-facing guides and PDFs
+
+The docs hub is [`docs/README.md`](docs/README.md).
+
+## Contribution
+
+Keep changes small and practical. When code changes affect setup, configuration, integrations, or user flows, update the relevant docs in the same pull request.
+
+## Links
+
+- Project website: [saldi.dk](https://saldi.dk)
+- Historical Danish entry doc: [`LAESMIG.txt`](LAESMIG.txt)

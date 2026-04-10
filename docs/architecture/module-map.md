@@ -1,13 +1,12 @@
 # Module Map
 
-Status: draft
-
-This document gives a high-level map of the SALDI codebase. It is intended as a navigation aid for a large PHP monolith where functionality is spread across business modules plus a shared platform layer.
+This document gives a high-level map of the SALDI codebase. It is a navigation aid for a large PHP monolith where functionality is spread across business modules plus a shared platform layer.
 
 ## Platform
 These directories provide the application shell, shared runtime behavior, and reusable UI/backend helpers.
 
-- `index/` — login, entry points, and main application shell/navigation.
+- `index/` — login, entry points, and main application shell/navigation.  
+  See: `docs/platform/index.md`
 - `admin/` — administration, backup/restore, licensing, and maintenance workflows.  
   See: `docs/platform/admin.md`
 - `includes/` — shared runtime core: DB access, auth/session bootstrap, common helpers, document handling, order/report support.  
@@ -36,7 +35,7 @@ These directories contain the main ERP/business logic.
   See: `docs/modules/produktion.md`
 - `kreditor/` — supplier/accounts payable, vendor-side order/payment flows.  
   See: `docs/modules/kreditor.md`
-- `booking/` — booking-oriented entry points and reservation-related UI.  
+- `booking/` — small legacy booking gateway that exposes a narrow rentable-item listing path.  
   See: `docs/modules/booking.md`
 - `rental/` — rental workflows and reservation/calendar behavior.  
   See: `docs/modules/rental.md`
@@ -52,6 +51,8 @@ These areas connect SALDI to external systems, APIs, partner tools, or specializ
   See also: `docs/integrations/legacy-webshop-booking.md`
 - `restapi/` — newer REST API with OpenAPI/Swagger artifacts.  
   See: `docs/integrations/restapi-overview.md`
+- `api/v2/` — lightweight API-key authenticated CRUD endpoints.  
+  See: `docs/integrations/api-v2-endpoints.md`
 - `soapserver/` — SOAP services exposed by SALDI.  
   See also: `docs/integrations/soap-and-projectmanager.md`
 - `soapklient/` — SOAP client wrappers and external-sync helpers.  
@@ -61,9 +62,9 @@ These areas connect SALDI to external systems, APIs, partner tools, or specializ
 - `dandomain/` — Dandomain-specific integration scripts.  
   See also: `docs/integrations/legacy-webshop-booking.md`
 - `remoteBooking/` — booking/payment/mail integration surface.  
-  See also: `docs/integrations/legacy-webshop-booking.md`
+  See also: `docs/integrations/remote-booking.md`
 - `projectManager/` — embedded project-management subsystem with its own schema/docs.  
-  See also: `docs/integrations/soap-and-projectmanager.md`
+  See also: `docs/integrations/projectmanager.md`
 
 ## Supporting and historical areas
 These areas are important, but are often reference, historical, or support-oriented rather than core module boundaries.
@@ -85,13 +86,14 @@ In practice this means:
 When changing code, do not assume one visible screen is the only active path. Check for older entry pages, include-based flows, and integration-specific variants.
 
 ## Current documentation coverage
-Current documentation in this repository includes:
+Current docs include:
 - `docs/README.md`
 - `docs/getting-started/installation.md`
 - `docs/operations/deployment-and-troubleshooting.md`
 - `docs/operations/configuration-runbook.md`
 - `docs/operations/backup-restore-runbook.md`
 - `docs/operations/upgrades-and-releases.md`
+- `docs/operations/release-smoke-sheet.md`
 - `docs/operations/verification-checklists.md`
 - `docs/architecture/module-map.md`
 - `docs/platform/includes.md`
@@ -108,6 +110,7 @@ Current documentation in this repository includes:
 - `docs/modules/rental.md`
 - `docs/modules/booking.md`
 - `docs/modules/sager.md`
+- `docs/modules/troubleshooting-by-area.md`
 - `docs/integrations/restapi-overview.md`
 - `docs/integrations/api-v2-endpoints.md`
 - `docs/integrations/legacy-webshop-booking.md`
@@ -116,8 +119,10 @@ Current documentation in this repository includes:
 - `docs/integrations/soap-operations.md`
 - `docs/integrations/projectmanager.md`
 
-Recommended next additions:
-- deeper field-level API payload examples
-- more detailed include/global dependency maps
-- deeper report action and document lifecycle detail
-- module-specific troubleshooting guides where needed
+## Still worth deepening over time
+The biggest future wins are:
+- more field-level API payload examples
+- deeper include/global dependency maps
+- richer report action and document lifecycle detail
+- more module-specific troubleshooting notes based on real incidents
+- runtime verification notes when deploy-specific behavior differs across hosts

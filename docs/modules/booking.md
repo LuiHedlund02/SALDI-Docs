@@ -1,6 +1,5 @@
 # `booking/` module
 
-Status: draft
 Audience: maintainers
 
 ## Purpose
@@ -10,7 +9,7 @@ Audience: maintainers
 - `booking/index.php` — the only functional entry point
 - `booking/index.html` — placeholder only
 
-## Observed behavior
+## Current behavior
 When called with `?id=<regnskab_id>`, the script:
 1. validates that an account ID is provided
 2. resolves `regnskab.id` to the target database
@@ -30,12 +29,12 @@ This page depends on:
 - shared includes such as `std_func.php`, `connect.php`, `license_func.php`, and `online.php`
 
 ## Scope and limitations
-- appears read-only
+- effectively read-only in current use
 - does not contain a full booking UI or reservation workflow
 - looks more like a compatibility access page than a primary product surface
 - is tightly coupled to the wider SALDI runtime and database schema
 
-## Risks to document
+## Risks
 1. **Synthetic-session behavior** — temporary `online` rows may be easy to overlook when debugging.
 2. **License dependency** — the page will fail or redirect differently based on booking feature state.
 3. **Narrow but implicit scope** — because it looks tiny, its runtime dependencies are easy to underestimate.

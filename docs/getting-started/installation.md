@@ -1,6 +1,5 @@
 # Installation
 
-Status: draft
 Audience: deployers, maintainers
 
 This page documents the practical installation flow for SALDI based on the current repository and installer behavior.

@@ -1,6 +1,5 @@
 # REST API Overview
 
-Status: draft
 Audience: integrators, backend developers, maintainers
 
 The `restapi/` tree contains the current SALDI REST API implementation. It is structured as a PHP API with shared infrastructure, endpoint handlers, business models/services, and local test/spec artifacts.
@@ -18,7 +17,7 @@ Main areas:
 ## Request flow
 Most v1 requests route through `endpoints/v1/index.php`, which dispatches to endpoint files under `endpoints/v1/`.
 
-Typical responsibilities handled by shared base code include:
+Typical shared responsibilities handled by base code include:
 1. request logging
 2. auth checking
 3. tenant database resolution
@@ -33,22 +32,92 @@ The active model is JWT/Bearer based:
 - clients send `Authorization: Bearer <access_token>`
 - `POST /auth/login` issues access + refresh tokens
 - `POST /auth/refresh` issues a new access token
-- protected routes require a valid access token with the correct token type
+- protected routes require a valid access token with token type `access`
 
-### Tenant resolution
+### Login request
+Runtime login expects:
+```json
+{
+  "username": "brugernavn",
+  "password": "password",
+  "account_name": "regnskab-navn"
+}
+```
+
+Example success response shape:
+```json
+{
+  "success": true,
+  "data": {
+    "access_token": "...",
+    "refresh_token": "...",
+    "token_type": "Bearer",
+    "expires_in": 3600,
+    "user": {
+      "id": 1,
+      "username": "brugernavn",
+      "is_admin": false
+    },
+    "tenant": {
+      "id": 1,
+      "name": "Demo",
+      "db": "demo_db"
+    }
+  },
+  "message": "Login successful"
+}
+```
+
+Important runtime facts:
+- users are stored in each tenant DB, not only in the master DB
+- `account_name` is required because login first resolves the tenant from `regnskab`
+- the login path rejects closed tenants
+- passwords are checked against both legacy MD5 and `saldikrypt()`-style hashes
+
+### Refresh request
+`POST /auth/refresh` expects:
+```json
+{ "refresh_token": "..." }
+```
+
+Example success shape:
+```json
+{
+  "success": true,
+  "data": {
+    "access_token": "...",
+    "token_type": "Bearer",
+    "expires_in": 3600
+  },
+  "message": "Token refreshed successfully"
+}
+```
+
+## Tenant resolution
 Tenant DB selection is handled primarily through:
-- `tenant_id` embedded in the JWT
+- `tenant_id` embedded in the JWT during login
 - fallback support for `X-Tenant-ID`
+
+Runtime behavior from `JWTAuth.php`:
+1. validate bearer token
+2. read `tenant_id` from token if present
+3. otherwise try `X-Tenant-ID`
+4. resolve the real tenant DB from the master `regnskab` table
+5. connect to that DB before protected endpoint logic runs
 
 This means tenant context is partly in the token and partly compatible with header-based callers.
 
-### Legacy compatibility
-Older auth code still exists in `core/auth.php` and related paths, including header styles such as:
-- `X-DB`
-- `X-SaldiUser`
-- API-key style `Authorization`
+## Response shape
+Most endpoints use the `BaseEndpoint` wrapper response shape:
+```json
+{
+  "success": true,
+  "data": { ... },
+  "message": "..."
+}
+```
 
-Treat this as backward-compatibility infrastructure, not the main model for new integrations.
+Error cases typically keep the same top-level structure with `success: false` and an HTTP status matching the failure.
 
 ## Endpoint organization
 Observed endpoint groups include:
@@ -82,9 +151,9 @@ Key documentation artifacts:
 - `tests/` for executable examples/verification
 
 ### Important warning
-`swagger.yaml` appears partially stale relative to runtime behavior.
+`swagger.yaml` is partially stale relative to runtime behavior.
 
-Specifically:
+Most importantly:
 - Swagger still documents older header/API-key auth patterns.
 - Runtime code now centers on JWT Bearer auth plus tenant resolution.
 
@@ -97,15 +166,7 @@ From `IMPLEMENTATION_STATUS.md`, areas still needing work include:
 - partially implemented invoice update behavior
 
 ## Safe maintenance guidance
-- Keep `BaseEndpoint`, `JWTAuth`, and endpoint docs in sync.
+- Keep `BaseEndpoint`, `JWTAuth`, endpoint docs, and `swagger.yaml` in sync.
 - When changing auth, verify both JWT-based callers and any required legacy compatibility paths.
 - Treat tenant resolution as a first-class behavior and test it explicitly.
-- Update `swagger.yaml`, `swagger-ui.html`, and `IMPLEMENTATION_STATUS.md` in the same change when endpoint behavior changes.
-
-## Suggested future expansion for this doc
-This draft should later be extended with:
-- auth flow diagram
-- tenant resolution notes
-- endpoint catalog by business domain
-- spec/runtime drift checklist
-- testing conventions for API changes
+- Use `tests/` and runtime logging together when validating endpoint changes.

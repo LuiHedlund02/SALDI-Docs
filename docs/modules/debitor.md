@@ -1,13 +1,12 @@
 # `debitor/` module
 
-Status: draft
 Audience: maintainers, finance-support developers, integrators
 
 ## Purpose
 `debitor/` is the customer and accounts-receivable domain inside SALDI. It covers more than customer records: it includes debtor master data, order and invoice flows, posting, payment handling, reminders/collections, CRM features, commission/MySale behavior, rental hooks, POS-related flows, and document/export paths.
 
 ## What belongs to this module
-Observed responsibilities include:
+Current responsibilities include:
 - customer master data and debtor lists
 - debtor history and commission views
 - order and invoice generation
@@ -23,7 +22,7 @@ Observed responsibilities include:
 ### `debitor.php`
 Primary debtor list/dispatcher page.
 
-Observed behavior:
+Current behavior:
 - serves as the main entry to debtor list workflows
 - routes by `valg` into debtor, history, commission, and rental-related views
 - loads shared runtime/includes and grid rendering
@@ -33,7 +32,7 @@ Observed behavior:
 ### `debitorkort.php`
 Main customer/debtor card editor.
 
-Observed behavior:
+Current behavior:
 - creates/updates customer master data in `adresser`-related flows
 - handles contact, address, delivery, payment, account, and customer metadata
 - updates per-user settings such as tracked `debitorId`
@@ -62,7 +61,7 @@ Important files include:
 - `increaseInvoiceNumber.php`
 - `fakturadato.php`
 
-Observed responsibilities:
+Current responsibilities:
 - importing order data from CSV
 - posting invoices/orders into accounting-related flows
 - generating recurring or repeated invoice behavior
@@ -80,7 +79,7 @@ Important files include:
 - `peppol.php`
 - `ubl2ordre.php`
 
-Observed responsibilities:
+Current responsibilities:
 - generating invoice/order documents
 - building external invoice payloads
 - handling standards-based output such as UBL, OIOXML, Peppol, and EasyUBL
@@ -96,7 +95,7 @@ Important files include:
 - `inkasso.php`
 - `payments/` helpers such as `mobilepay.php`, `flatpay.php`, `vibrant.php`, `lane3000.php`, `pbs_import.php`
 
-Observed responsibilities:
+Current responsibilities:
 - payment list generation and payment settings
 - receipt/payment matching against open items
 - reminder and dunning flows
@@ -151,11 +150,48 @@ This module appears coupled to:
 - Verify payment hooks carefully when touching `payments/` or open-post reconciliation logic.
 - Preserve helper-folder boundaries where possible instead of adding more logic into already-large entry files.
 
-## Suggested future expansion for this doc
-This draft should later be extended with:
-- debtor data model overview
-- posting flow sequence diagram
-- payment/reminder lifecycle
-- EDI/export matrix by format
-- key settings and feature flags
-- test checklist for safe changes
+## Troubleshooting and verification
+### If invoices, numbering, or posting look wrong
+Inspect first:
+- `bogfor.php`
+- `increaseInvoiceNumber.php`
+- `fakturadato.php`
+- `genfakturer.php`
+
+Check for:
+- duplicate or skipped invoice numbers
+- wrong invoice or posting date
+- downstream posting mismatch after order/invoice generation
+
+### If payment matching or reminders break
+Inspect first:
+- `betalingsliste.php`
+- `betalinger.php`
+- `udlign_openpost.php`
+- `rykker.php`, `ny_rykker.php`, `rykkertjek.php`
+- `payments/pbs_import.php` and other provider helpers under `payments/`
+
+Check for:
+- open-post mismatch
+- imported payment rows not matching customer balances
+- reminder escalation running on the wrong customer or date set
+
+### If EDI or document delivery fails
+Inspect first:
+- `easyUBL.php`
+- `oioubl_dok.php`
+- `oioxml_dok.php`
+- `peppol.php`
+- `formularprint.php`
+
+Check for:
+- missing output file
+- malformed exported payload
+- downstream mail/send failure after otherwise successful posting
+
+### Post-change verification
+After debtor changes, verify at least:
+- `debitorkort.php` still saves correctly
+- one order/invoice path still works end-to-end
+- one payment/open-item path still balances correctly
+- one document/export path still produces the expected output

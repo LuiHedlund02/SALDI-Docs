@@ -1,6 +1,5 @@
 # `finans/` module
 
-Status: draft
 Audience: maintainers, finance-support developers, reviewers, implementers
 
 ## Purpose
@@ -9,7 +8,7 @@ Audience: maintainers, finance-support developers, reviewers, implementers
 A key design detail is that many workflows in this module are driven by the active financial year stored in `grupper` with `art = 'RA'`.
 
 ## What belongs to this module
-Observed responsibilities include:
+Current responsibilities include:
 - cash journal entry and editing
 - posting and simulation of accounting entries
 - open-item updates and balance recalculation
@@ -23,7 +22,7 @@ Observed responsibilities include:
 ### `kassekladde.php`
 Primary journal-entry UI.
 
-Observed behavior:
+Current behavior:
 - renders the editable cash-journal grid
 - supports drag/drop line ordering and duplicate-line behavior
 - loads many lookup widgets for account, amount, debtor, creditor, employee, department, project, currency, and date
@@ -35,7 +34,7 @@ This file appears to be the main user-facing page for preparing accounting entri
 ### `bogfor.php`
 Main posting engine.
 
-Observed behavior:
+Current behavior:
 - handles real posting and simulation modes
 - blocks posting of journals already marked as posted
 - uses the active financial-year period derived from `grupper.art = 'RA'`
@@ -48,7 +47,7 @@ This is one of the highest-risk files in the module because it changes accountin
 ### `rapport.php`
 Main report entry/dispatcher.
 
-Observed behavior:
+Current behavior:
 - routes to multiple financial outputs such as regnskab, kontokort, momsangivelse, kontrolspor, provisionsrapport, listeangivelse, and SAF-T-related reporting
 - works with filter/setup helpers in `rapport_includes/`
 
@@ -56,7 +55,7 @@ Observed behavior:
 Main helper folder:
 - `kassekladde_includes/`
 
-Observed responsibilities from filenames:
+Current responsibilities from filenames:
 - lookup/search helpers (`accountSearch.php`, `debitorLookup.php`, `creditorLookup.php`, `employeeLookup.php`, `departmentLookup.php`, `projectLookup.php`, `currencyLookup.php`, `amountSearch.php`)
 - open-item helpers (`openpost_inc.php`, `insertOpenPost.php`)
 - balance/date support (`dateBalance.php`)
@@ -72,7 +71,7 @@ Important files include:
 - `genberegn.php`
 - `openpostdato.php`
 
-Observed responsibilities:
+Current responsibilities:
 - turning journal lines into posted accounting entries
 - handling simulation versus actual commit
 - recalculating monthly totals in `kontoplan.md01..md12` from transaction data
@@ -87,7 +86,7 @@ Important files include:
 - `bankReconcile.php`
 - `rapport_includes/bankReconcile.php`
 
-Observed responsibilities:
+Current responsibilities:
 - uploading and importing bank/journal data
 - mapping imported columns into journal structure
 - storing per-user import configuration in `grupper`
@@ -99,7 +98,7 @@ Because user-specific mappings are involved, two users may experience different 
 Important file:
 - `budget.php`
 
-Observed responsibilities:
+Current responsibilities:
 - monthly budget grid maintenance by account and period
 - save/edit workflow for budget values
 - autofill from prior-year actuals
@@ -118,7 +117,7 @@ Important files include:
 - `saft.php`
 - `saftCreator.php`
 
-Observed responsibilities:
+Current responsibilities:
 - financial statements and account-card style reports
 - VAT-focused reports and declarations
 - audit/control-track style outputs
@@ -148,12 +147,35 @@ This module appears coupled to:
 - When changing VAT logic, compare report output before and after on known sample data.
 - After changes in posting/import/reconciliation flows, verify both balances and open-item dates.
 
-## Suggested future expansion for this doc
-This draft should later be extended with:
-- posting sequence diagram
-- financial-year model and period rules
-- VAT account and difference-account rules
-- import format matrix
-- reconciliation flow description
-- report catalog with intended use per report
-- finance smoke-test checklist
+## Troubleshooting and verification
+### If posting fails or balances look wrong
+Inspect first:
+- `bogfor.php`
+- `genberegn.php`
+- `openpostdato.php`
+- relevant `grupper` rows with `art = 'RA'`
+
+Check for:
+- journals already marked as posted
+- wrong active financial year
+- open-item dates or matching state drifting after posting
+- VAT or difference-account behavior changing between posting and reports
+
+### If import or bank reconciliation fails
+Inspect first:
+- `importer.php`
+- `bankimport.php`
+- `bankReconcile.php`
+- `rapport_includes/bankReconcile.php`
+
+Check for:
+- user-specific import mappings in `grupper`
+- changed column expectations in import files
+- mismatches between statement data and posted entries
+
+### Post-change verification
+After finance changes, verify at least:
+- `kassekladde.php` opens and saves normally
+- one simulation path and one real posting path behave as expected in a safe test environment
+- one report in `rapport.php` still matches expected figures
+- open-item related pages still load and reflect the expected state

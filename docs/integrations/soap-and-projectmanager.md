@@ -1,6 +1,5 @@
 # SOAP services and ProjectManager
 
-Status: draft
 Audience: integrators, maintainers
 
 This page documents two special integration surfaces in the SALDI repository:
@@ -23,13 +22,15 @@ Although exposed as SOAP/WSDL, the service behaves like a legacy compatibility l
 - payloads are effectively tab-separated rather than rich typed objects
 - server code relies on relative include/temp paths
 - operations depend on legacy request/session assumptions
-- table/action validation appears limited and should not be treated as strong authorization
+- table/action validation is limited and should not be treated as strong authorization
 
 ### Main risks
 - weak input/table protection in some operations
 - relative-path and writable-temp assumptions
 - legacy password/encoding handling
 - callers may assume stronger SOAP semantics than the implementation actually provides
+
+For per-operation detail, see [`soap-operations.md`](soap-operations.md).
 
 ## SOAP client: `soapklient/`
 `soapklient/` is the client-side wrapper layer for calling these SOAP services.
@@ -76,17 +77,11 @@ This is one of the better-documented subsystems in the repo:
 - verify session propagation into its API endpoints and UI pages
 - review default-user fallback behavior before exposing new entry points or automation
 
-## Key risks to document
+For subsystem-specific details, see [`projectmanager.md`](projectmanager.md).
+
+## Key risks
 1. **SOAP contract ambiguity** — WSDL exists, but runtime semantics are legacy and loosely typed.
 2. **SOAP environment fragility** — path, encoding, and writable-temp assumptions can break deployments.
 3. **Weak server-side protection** — some SOAP operations deserve security review before wider use.
 4. **ProjectManager auth coupling** — ERP session assumptions can create authorization surprises.
 5. **Default-user fallback risk** — `user_id = 1` fallback can misattribute or over-authorize actions.
-
-## Suggested future expansion for this doc
-This draft should later be extended with:
-- SOAP operation matrix
-- auth/session requirements table
-- deployment prerequisites for SOAP client/server
-- ProjectManager session/data-flow notes
-- compatibility/deprecation guidance

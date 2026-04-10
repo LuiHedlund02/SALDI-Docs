@@ -1,6 +1,5 @@
 # Configuration Runbook
 
-Status: draft
 Audience: ops, maintainers
 
 Use this checklist when changing environment-specific configuration after install, restore, or server moves.
@@ -79,3 +78,9 @@ After editing DB credentials, tool paths, or runtime permissions, verify:
 - one representative integration or import path writes its expected log file
 
 If tool paths changed, log out and log back in before retesting so cached settings are refreshed.
+
+## If a configuration change goes wrong
+- restore the previous `includes/connect.php` or regenerate it through the installer path if DB credentials were changed incorrectly
+- revert changed tool paths in `admin/admin_settings.php`
+- clear or re-test temp output under `temp/$db/` so stale files do not hide the real failure
+- rerun the platform baseline plus one affected module/integration checklist before declaring the environment healthy again

@@ -1,6 +1,5 @@
 # `systemdata/` module
 
-Status: draft
 Audience: maintainers, admins, implementers
 
 ## Purpose
@@ -22,7 +21,7 @@ Key files:
 - `syssetup.php`
 - `syssetupIncludes/`
 
-Observed behavior:
+Current behavior:
 - manages grouped system setup by `art`
 - covers setup such as VAT, debtor/creditor groups, warehouses, item groups, discount groups, forms, and related master data
 - relies heavily on `grupper`-based configuration
@@ -33,7 +32,7 @@ Key files:
 - `diverseIncludes/`
 - `sys_div_func.php`
 
-Observed behavior:
+Current behavior:
 - handles general-purpose configuration such as POS options, SMTP/mail setup, labels, API-related settings, import/export settings, and other operational toggles
 
 ### Fiscal year management
@@ -43,7 +42,7 @@ Key files:
 - `financialYearInc/`
 - `fiscalYearInc/`
 
-Observed behavior:
+Current behavior:
 - creates, edits, activates, and deletes fiscal years
 - copies or migrates year-related setup
 - updates year state for users and online sessions
@@ -54,7 +53,7 @@ Key files:
 - `kontoplan.php`
 - `chartOfAccountIncludes/`
 
-Observed behavior:
+Current behavior:
 - maintains the chart of accounts
 - supports account-structure configuration and related helper logic
 - appears tightly linked to fiscal-year behavior and currency/account settings
@@ -65,7 +64,7 @@ Key files:
 - `brugerdata.php`
 - `brugereRevisor.php`
 
-Observed behavior:
+Current behavior:
 - manages users and rights matrices
 - supports accountant/revisor assignment
 - includes permission-related settings such as read-only behavior, user links, and other account-access controls
@@ -77,7 +76,7 @@ Key files:
 - `save_form_data.php`
 - `formularimport.php`
 
-Observed behavior:
+Current behavior:
 - edits form definitions and form layout data
 - supports load/save endpoints and import workflows for forms/templates
 - affects print/document behavior outside this module
@@ -88,7 +87,7 @@ Key files:
 - `posmenuer_includes/systemButtons.php`
 - `sys_div_func_includes/posChoices.php`
 
-Observed behavior:
+Current behavior:
 - configures POS menus and button definitions
 - manages POS-specific runtime choices and supporting setup
 
@@ -97,7 +96,7 @@ Key files:
 - `gdpr.php`
 - `gdprInc/`
 
-Observed behavior:
+Current behavior:
 - finds and deletes eligible stale customer/vendor records
 - performs privacy-related cleanup routines
 
@@ -106,7 +105,7 @@ Key files:
 - `importer_*`
 - `exporter_*`
 
-Observed behavior:
+Current behavior:
 - provides CSV-based bulk movement of accounts, addresses, goods, variants, forms, POS menus, and similar master/config data
 
 ## Key data dependencies
@@ -134,11 +133,47 @@ Configuration changes here can affect multiple business modules at once.
 - Document any new `grupper` codes, settings keys, or CSV formats immediately.
 - Be cautious with cleanup/GDPR routines and confirm record-selection rules before changing them.
 
-## Suggested future expansion for this doc
-This draft should later be extended with:
-- `grupper`/master-data concept glossary
-- fiscal-year lifecycle notes
-- rights model summary
-- form/POS configuration maps
-- CSV import/export matrix
-- system-configuration smoke-test checklist
+## Troubleshooting and verification
+### If rights or access suddenly change
+Inspect first:
+- `brugere.php`
+- `brugerdata.php`
+- `brugereRevisor.php`
+- related permission fields stored in users/rights tables
+
+Check for:
+- read-only or revisor-related flags changing unexpectedly
+- account/user links not matching the intended environment
+- downstream modules disappearing because rights or license-related assumptions shifted
+
+### If fiscal-year or chart behavior is wrong
+Inspect first:
+- `regnskabsaar.php`
+- `regnskabskort.php`
+- `kontoplan.php`
+- helper folders `financialYearInc/` and `fiscalYearInc/`
+
+Check for:
+- the wrong active year
+- copied/deleted year setup leaving partial data behind
+- chart changes no longer matching finance/debtor/creditor expectations
+
+### If forms, POS, or bulk imports break
+Inspect first:
+- `formularkort.php`
+- `load_form_data.php`
+- `save_form_data.php`
+- `posmenuer.php`
+- `importer_*` / `exporter_*`
+
+Check for:
+- template/layout drift in printed documents
+- POS menu changes not reflected in runtime use
+- CSV imports overwriting more shared setup than intended
+
+### Post-change verification
+After systemdata changes, verify at least:
+- one user/rights change behaves as expected
+- one fiscal-year or chart page still loads and saves correctly
+- one downstream module affected by the changed setup still works
+- one form/POS/import path works if it was touched

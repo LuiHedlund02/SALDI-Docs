@@ -1,6 +1,5 @@
 # `rental/` module
 
-Status: draft
 Audience: maintainers, booking/rental developers, support
 
 ## Purpose
@@ -23,7 +22,7 @@ The module uses a shared PHP backend plus page-specific JavaScript UIs.
 - `header.php` — shared navigation/header
 
 ## Core concepts
-Observed concepts include:
+Current concepts include:
 - rentable items/assets grouped under products
 - booking periods
 - reservations/spærringer
@@ -50,14 +49,14 @@ This suggests the module is self-contained in concept, but still coupled to the 
 
 ## Backend and API model
 ### `rental.php`
-Observed responsibilities include:
+Current responsibilities include:
 - backend request handling for bookings, items, reservations, settings, remote config, and customer lookup
 - cleanup of expired external bookings
 - ensuring missing remote-booking rows exist where needed
 - creating/updating linked orders in the wider ERP flow
 
 ### `api/api.js`
-Observed responsibilities include:
+Current responsibilities include:
 - wrapping all front-end calls to the rental backend
 - exposing methods for bookings, items, reservations, closed days, settings, remote link/mail/payment config, and order creation/update
 
@@ -100,11 +99,33 @@ This means rental is not just a calendar system — it also affects the ERP orde
 - Verify linked order behavior whenever changing booking lifecycle logic.
 - Be careful with runtime schema helpers and document new columns/tables immediately.
 
-## Suggested future expansion for this doc
-This draft should later be extended with:
-- rental data-model diagram
-- booking lifecycle diagram
-- availability-calculation rules
-- remote booking/payment flow notes
-- order-linkage rules
-- smoke-test checklist for rental changes
+## Troubleshooting and verification
+### If availability is wrong
+Inspect first:
+- `rental.php`
+- `api/api.js`
+- `daysoff.php` / `daysoff.js`
+- relevant rows in `rentalperiod`, `rentalreserved`, and `rentalclosed`
+
+Check for:
+- bookings, reservations, and closed days disagreeing
+- expired remote bookings not being cleaned up
+- product/item confusion creating false availability
+
+### If linked orders or remote booking fail
+Inspect first:
+- `CreateOrder()` and `updateOrder()` paths in `rental.php`
+- `remote.php` / `remote.js`
+- `remoteBooking/api.php`
+
+Check for:
+- booking rows created without the expected linked order state
+- remote settings tables missing required payment/mail configuration
+- booking success depending on payment state that never updates
+
+### Post-change verification
+After rental changes, verify at least:
+- availability loads in `index.php`
+- one booking can be created and then edited
+- one reservation or closed-day change affects the calendar as expected
+- linked order behavior still works for a known-good scenario

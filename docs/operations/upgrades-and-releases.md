@@ -1,6 +1,5 @@
 # Upgrades and releases
 
-Status: draft
 Audience: ops, maintainers, release owners
 
 This page provides a practical release/upgrade checklist for the current SALDI deployment model.
@@ -14,8 +13,10 @@ SALDI is a source-as-webroot legacy PHP application with:
 
 A safe release is not just “copy new files.” It should include environment, runtime, and smoke-test checks.
 
-## Before release
-### 1. Review scope
+## Release phases
+
+### 1. Before release
+#### Review scope
 Confirm whether the change touches any of:
 - install or runtime config
 - DB access/bootstrap (`includes/`)
@@ -27,7 +28,7 @@ Confirm whether the change touches any of:
 
 If yes, ensure the related docs were updated in the same change.
 
-### 2. Confirm environment assumptions
+#### Confirm environment assumptions
 Verify on the target host:
 - `temp/` is writable
 - `logolib/` is writable
@@ -35,21 +36,22 @@ Verify on the target host:
 - DB credentials/config in `includes/connect.php` are correct
 - enough disk space exists for temp/log/backup artifacts
 
-### 3. Prepare rollback material
+#### Prepare rollback material
 Before deploying:
 - take a fresh backup
 - record current app revision/version if available
 - capture current tool-path/config state if it changed recently
 - confirm who can perform rollback if needed
+- note whether the release changes posting, stock, schema, or configuration data that cannot simply be undone by copying old PHP files back
 
-## During release
-### 1. Deploy cautiously
+### 2. During release
+#### Deploy cautiously
 Because the app is source-as-webroot:
 - avoid partial file copies if possible
 - keep shared platform files (`includes/`, `index/`, `admin/`) consistent as a set
 - be especially cautious when changing mirrored or duplicated frontend shell files
 
-### 2. Watch high-risk areas
+#### Watch high-risk areas
 Pay extra attention when the release touches:
 - `includes/online.php`
 - `includes/db_query.php`
@@ -60,20 +62,20 @@ Pay extra attention when the release touches:
 
 These have broad blast radius.
 
-## Post-release smoke tests
-Run at least these checks:
+### 3. Post-release smoke tests
+Run at least these checks.
 
-### Platform
+#### Platform
 - login works
 - logout/session-expiry behavior is normal
 - app does not incorrectly redirect to installer
 
-### Core runtime
+#### Core runtime
 - one page using shared `includes/` loads correctly
 - one report/accounting flow works
 - one document upload/preview flow works if relevant to the release
 
-### Business modules
+#### Business modules
 Test at least one representative flow in the module(s) changed, for example:
 - Debitor: open debtor card / order or invoice-related path
 - Finans: open journal / report page
@@ -81,34 +83,56 @@ Test at least one representative flow in the module(s) changed, for example:
 - Kreditor: open supplier/order page
 - Rental/Sager/Systemdata: open the changed workflow directly
 
-### Integrations
+#### Integrations
 If touched by the release, verify at least one relevant path:
 - REST API auth works
-- legacy API key flow works if still used
+- API v2 key-auth flow works if used
 - SOAP or webshop sync logs/errors look normal
 - remote booking/payment flow still initializes if touched
 
-### Ops
+#### Ops
 - one backup-related path still works
 - temp/log files are still being written in expected locations
 - external tool paths still resolve
 
-## Upgrade-specific cautions
-If the release includes schema or runtime-behavior changes:
-- verify install/first-run assumptions still hold
-- check for runtime schema mutation code that may behave differently after deploy
-- verify old and newer UI paths where both exist
-- confirm no stale cached temp artifacts are masking failures
+## Rollback model
+Not every SALDI change rolls back cleanly by restoring older PHP files.
 
-## If rollback is needed
+### Code-only rollback is usually sufficient for:
+- template and shell display regressions
+- non-destructive navigation issues
+- documentation-only mistakes
+- isolated frontend regressions
+
+### Backup-first rollback is usually required or should be considered for:
+- posting/accounting changes already run against live data
+- stock movements, receipts, or corrections already applied
+- runtime schema mutations or installer/upgrader changes
+- restore/import failures that partially changed data
+- payment/booking flows that created linked order and rental state
+- admin changes that altered account/config/license state
+
+## Suggested rollback procedure
 1. stop or reduce active usage if possible
-2. restore previous code set
-3. restore DB/data only if necessary and only with a validated procedure
-4. re-run the core smoke tests
-5. document the failure mode before attempting a new release
+2. decide whether the issue is code-only or data-affecting
+3. if code-only, restore the previous code set and rerun smoke tests
+4. if data-affecting, restore only through a validated backup/restore procedure
+5. re-run the core smoke tests plus the affected module/integration checks
+6. document the failure mode before attempting a new release
+
+## Rollback triggers
+Treat rollback as the default option when any of these occur post-release:
+- login/install bootstrap breaks for more than one account
+- posting or open-item logic produces inconsistent results
+- stock or booking state is duplicated/corrupted
+- backup/restore stops producing trustworthy artifacts
+- API auth is down for production integrations
+- document/PDF flows fail in a way that blocks invoicing or daily work
 
 ## Documentation rule
 A release should be considered incomplete if code changes were shipped without updating:
 - the relevant module/platform/integration doc
 - `docs/README.md` or `docs/architecture/module-map.md` when navigation changed
 - ops/runbook docs when setup, tool paths, or runtime expectations changed
+
+For a shorter release checklist, use [`release-smoke-sheet.md`](release-smoke-sheet.md).

@@ -1,6 +1,5 @@
 # `lager/` module
 
-Status: draft
 Audience: maintainers, inventory-support developers, implementers
 
 ## Purpose
@@ -11,7 +10,7 @@ A notable architectural trait is that this module contains both:
 - a newer list/navigation flow under `lager/lister/`
 
 ## What belongs to this module
-Observed responsibilities include:
+Current responsibilities include:
 - product and variant master data
 - stock tracking by warehouse/location
 - goods receiving and receiving lists
@@ -27,7 +26,7 @@ Observed responsibilities include:
 ### `lister/vareliste.php`
 Current main product-list entry point.
 
-Observed behavior:
+Current behavior:
 - loads the newer list UI for products
 - uses `topLineVarer.php` for navigation/header behavior
 - builds a searchable product grid with clickable rows into `varekort.php`
@@ -38,7 +37,7 @@ This appears to be the best place to start when understanding the current invent
 ### `varekort.php`
 Main product card editor.
 
-Observed behavior:
+Current behavior:
 - edits product master data and stock-related settings
 - includes both `productCardIncludes/` and `varekort_includes/`
 - supports variants, pricing, VAT behavior, barcodes, supplier/shop-related fields, and stock-related settings
@@ -56,7 +55,7 @@ Important files/directories:
 - `productCardIncludes/`
 - `varekort_includes/`
 
-Observed responsibilities:
+Current responsibilities:
 - product identity and description fields
 - barcodes and aliases
 - VAT and price handling
@@ -73,7 +72,7 @@ Important files include:
 - `modtagelse.php`
 - `orderapi.php`
 
-Observed responsibilities:
+Current responsibilities:
 - receiving lists and receiving forms
 - matching expected quantities from purchase-order-like flows against received quantities
 - updating receiving records and warehouse state
@@ -87,7 +86,7 @@ Important files include:
 - `lagerregulering.php`
 - `lagerflyt.php`
 
-Observed responsibilities:
+Current responsibilities:
 - stock counting
 - direct stock corrections/regulation
 - warehouse/stock transfers
@@ -103,7 +102,7 @@ Important files include:
 - `lagerstatusmail.php`
 - `rapport.php`
 
-Observed responsibilities:
+Current responsibilities:
 - operational inventory status views
 - min/max stock reporting
 - status mail/alert flows
@@ -116,7 +115,7 @@ Important files include:
 - `pricelist.php`
 - `opdater_kostpriser.php`
 
-Observed responsibilities:
+Current responsibilities:
 - list-based pricing management
 - cost-price update routines
 - interaction with master-data pricing fields and possibly downstream sales/shop behavior
@@ -126,7 +125,7 @@ Important files include:
 - `labelprint.php`
 - `labelprint_includes/`
 
-Observed responsibilities:
+Current responsibilities:
 - label layout selection
 - printer-specific output behavior
 - different renderer paths for old/new label handling and hardware-specific formats
@@ -136,7 +135,7 @@ Important files include:
 - `stockLog.php`
 - `varespor.php`
 
-Observed responsibilities:
+Current responsibilities:
 - stock movement history
 - item traceability across receipts, transfers, and other stock-affecting events
 
@@ -165,12 +164,35 @@ This module appears coupled to:
 - Be cautious with any code that performs `ALTER TABLE` at runtime; document new schema dependencies immediately.
 - When changing batch or FIFO logic, verify both quantity totals and traceability/history outputs.
 
-## Suggested future expansion for this doc
-This draft should later be extended with:
-- product/variant data model overview
-- receiving workflow diagram
-- stock-transfer and FIFO explanation
-- stock table relationship map
-- pricing rule summary
-- label/printer capability matrix
-- inventory smoke-test checklist
+## Troubleshooting and verification
+### If product-card or setup changes ripple unexpectedly
+Inspect first:
+- `varekort.php`
+- `productCardIncludes/`
+- `varekort_includes/`
+
+Check for:
+- runtime `ALTER TABLE` behavior creating schema drift
+- product master-data changes affecting POS, shop sync, or pricing unexpectedly
+- variant/barcode fields no longer lining up with downstream flows
+
+### If receiving, transfer, or stock totals look wrong
+Inspect first:
+- `modtagelse.php`
+- `modtageliste.php`
+- `lagerflyt.php`
+- `lagerregulering.php`
+- `stockLog.php`
+- `varespor.php`
+
+Check for:
+- duplicate receiving updates
+- FIFO or batch allocation changing unexpectedly
+- transfer logic updating `lagerstatus` without matching traceability rows
+
+### Post-change verification
+After inventory changes, verify at least:
+- `lister/vareliste.php` still opens and links into `varekort.php`
+- one product-card save works
+- one receiving or transfer path updates stock as expected
+- one stock log or traceability view still explains the resulting movement

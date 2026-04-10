@@ -1,10 +1,8 @@
 # SALDI documentation
 
-Status: draft
+`docs/` is the canonical technical documentation hub for the SALDI repository.
 
-This `docs/` folder is intended to become the canonical technical documentation hub for the SALDI repository.
-
-SALDI is a large legacy PHP monolith with many business modules, shared platform code, and several integration surfaces. Because documentation already exists in multiple places, this folder should be used to point readers to the current source of truth and clearly separate active docs from historical/reference material.
+SALDI is a large legacy PHP monolith with broad shared runtime behavior, business modules with hidden cross-coupling, and several generations of integration surfaces. Use these docs to find the current technical source of truth, and use `doc/` and `guides/` as historical or user-facing supplements.
 
 ## Start here
 If you are new to the repository, start with:
@@ -33,6 +31,7 @@ If you are new to the repository, start with:
 - [`modules/rental.md`](modules/rental.md)
 - [`modules/booking.md`](modules/booking.md)
 - [`modules/sager.md`](modules/sager.md)
+- [`modules/troubleshooting-by-area.md`](modules/troubleshooting-by-area.md)
 
 ### Ops / deployers
 - Root [`INSTALLATION.txt`](../INSTALLATION.txt)
@@ -42,13 +41,13 @@ If you are new to the repository, start with:
 - [`operations/configuration-runbook.md`](operations/configuration-runbook.md)
 - [`operations/backup-restore-runbook.md`](operations/backup-restore-runbook.md)
 - [`operations/upgrades-and-releases.md`](operations/upgrades-and-releases.md)
+- [`operations/release-smoke-sheet.md`](operations/release-smoke-sheet.md)
 - [`operations/verification-checklists.md`](operations/verification-checklists.md)
 
 ### Integrators
-- `restapi/swagger.yaml`
-- `restapi/swagger-ui.html`
-- `restapi/IMPLEMENTATION_STATUS.md`
-- `api/v2/README.md`
+Start with the docs in `docs/integrations/` first, then consult code-adjacent specs/examples as supplementary material.
+
+Primary docs:
 - [`integrations/restapi-overview.md`](integrations/restapi-overview.md)
 - [`integrations/api-v2-endpoints.md`](integrations/api-v2-endpoints.md)
 - [`integrations/legacy-webshop-booking.md`](integrations/legacy-webshop-booking.md)
@@ -57,6 +56,12 @@ If you are new to the repository, start with:
 - [`integrations/soap-operations.md`](integrations/soap-operations.md)
 - [`integrations/projectmanager.md`](integrations/projectmanager.md)
 
+Supplementary code-adjacent references:
+- `restapi/swagger.yaml`
+- `restapi/swagger-ui.html`
+- `restapi/IMPLEMENTATION_STATUS.md`
+- `api/v2/README.md`
+
 ### Product/support/power users
 - Root `guides/`
 - Root `doc/brugervejledning.pdf`
@@ -64,11 +69,11 @@ If you are new to the repository, start with:
 
 ## Core system areas
 Current docs:
-- [`platform/includes.md`](platform/includes.md) — shared runtime/platform layer
-- [`platform/admin.md`](platform/admin.md) — admin console, backups, restore, licensing, settings
-- [`platform/index.md`](platform/index.md) — login shell, iframe navigation, install redirect behavior
-- [`platform/report-and-docs.md`](platform/report-and-docs.md) — report and document workflow helpers with side effects
-- [`platform/frontend-assets.md`](platform/frontend-assets.md) — frontend shells, asset stacks, CSS/JS risk map
+- [`platform/includes.md`](platform/includes.md) — shared runtime/platform layer, globals, helpers, external tool dependencies
+- [`platform/admin.md`](platform/admin.md) — admin console, backups, restore, licensing, settings, destructive workflows
+- [`platform/index.md`](platform/index.md) — login shell, iframe navigation, cookies, install redirect behavior
+- [`platform/report-and-docs.md`](platform/report-and-docs.md) — report and document workflows, side effects, preview/rendering paths
+- [`platform/frontend-assets.md`](platform/frontend-assets.md) — shell/include matrix, asset stacks, CSS/JS ownership map
 - [`modules/debitor.md`](modules/debitor.md) — customer and accounts-receivable flows
 - [`modules/finans.md`](modules/finans.md) — journal, posting, finance, VAT, reporting
 - [`modules/lager.md`](modules/lager.md) — inventory, receiving, stock, pricing, labels
@@ -78,13 +83,7 @@ Current docs:
 - [`modules/rental.md`](modules/rental.md) — rental bookings, items, reservations, remote settings, linked orders
 - [`modules/booking.md`](modules/booking.md) — small legacy booking gateway
 - [`modules/sager.md`](modules/sager.md) — case management, planning, payroll/time, templates, attachments
-
-Planned next areas to document:
-- deeper field-level API payload examples
-- more detailed SOAP request/response examples
-- richer `projectManager/` schema and endpoint reference
-- `remoteBooking/` endpoint-by-endpoint details
-- more detailed include/global dependency maps and troubleshooting notes
+- [`modules/troubleshooting-by-area.md`](modules/troubleshooting-by-area.md) — cross-module triage map for common failure types
 
 ## Integrations
 Important integration areas in the repository:
@@ -96,7 +95,7 @@ Important integration areas in the repository:
 - `remoteBooking/` — booking/payment integration
 - `projectManager/` — embedded project-management subsystem
 
-Current drafted integration docs:
+Current integration docs:
 - [`integrations/restapi-overview.md`](integrations/restapi-overview.md)
 - [`integrations/api-v2-endpoints.md`](integrations/api-v2-endpoints.md)
 - [`integrations/legacy-webshop-booking.md`](integrations/legacy-webshop-booking.md)
@@ -104,8 +103,6 @@ Current drafted integration docs:
 - [`integrations/soap-and-projectmanager.md`](integrations/soap-and-projectmanager.md)
 - [`integrations/soap-operations.md`](integrations/soap-operations.md)
 - [`integrations/projectmanager.md`](integrations/projectmanager.md)
-
-These can later be expanded into deeper per-endpoint or per-operation pages where needed.
 
 ## Historical and reference docs
 These existing repo docs are still valuable, but they do not all represent canonical current technical documentation:

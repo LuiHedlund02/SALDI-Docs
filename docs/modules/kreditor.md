@@ -1,6 +1,5 @@
 # `kreditor/` module
 
-Status: draft
 Audience: maintainers, accounting-support developers, integrators
 
 ## Purpose
@@ -9,7 +8,7 @@ Audience: maintainers, accounting-support developers, integrators
 This is a business-critical module because it touches both supplier operations and accounting state.
 
 ## What belongs to this module
-Observed responsibilities include:
+Current responsibilities include:
 - supplier cards and supplier lists
 - purchase-order creation and editing
 - goods receipt and receipt-side posting
@@ -24,7 +23,7 @@ Observed responsibilities include:
 ### `kreditor.php`
 Main supplier list / landing page.
 
-Observed behavior:
+Current behavior:
 - renders the main creditor overview and search/filter UI
 - links into supplier cards
 - uses a datagrid/list style interface
@@ -33,7 +32,7 @@ Observed behavior:
 ### `kreditorkort.php`
 Main supplier card editor.
 
-Observed behavior:
+Current behavior:
 - edits supplier identity, address, bank, VAT/currency, payment terms, and contact data
 - serves as master-data source for orders, payments, and reporting
 - connects to related actions such as print, labels, account fusion, and ledger views
@@ -41,7 +40,7 @@ Observed behavior:
 ### `ordreliste.php`
 Main purchase-order hub.
 
-Observed behavior:
+Current behavior:
 - lists supplier orders and status-based views
 - supports order follow-up and supplier-focused filtering
 - appears to be the practical start of the purchasing flow
@@ -49,7 +48,7 @@ Observed behavior:
 ### `ordre.php`
 Main supplier order editor.
 
-Observed behavior:
+Current behavior:
 - creates and edits supplier orders
 - manages order lines and item-related behavior
 - coordinates receipt/posting-related actions
@@ -58,7 +57,7 @@ Observed behavior:
 ### `modtag.php`
 Goods-receipt handler.
 
-Observed behavior:
+Current behavior:
 - records receipt of supplier-order lines
 - updates stock and accounting-adjacent state
 - closes the loop between purchasing and inventory/accounting impact
@@ -66,7 +65,7 @@ Observed behavior:
 ### `betalinger.php` / `betalingsliste.php`
 Payment-run preparation and payment-list overview.
 
-Observed behavior:
+Current behavior:
 - builds and edits supplier payment lines
 - supports review/printing/export of payment lists
 - exposes list views for saved payment runs and their state
@@ -74,14 +73,14 @@ Observed behavior:
 ### `rapport.php`
 Reporting dispatcher for the creditor area.
 
-Observed behavior:
+Current behavior:
 - provides open-item, ledger, balance, reminder, and statement-style outputs
 - acts as the reporting hub for supplier/account-payable views
 
 ### `ublimport.php`
 UBL/OIOUBL import entry point.
 
-Observed behavior:
+Current behavior:
 - imports supplier documents/files into the purchasing flow
 - can create or enrich supplier/order data from imported material
 
@@ -117,11 +116,44 @@ Imported/scan-based flows may enter in the middle by creating an order from a su
 - Test both manual order entry and imported/OCR-based intake when changing shared purchasing logic.
 - Keep helper-folder responsibilities intact where possible instead of adding more logic to already-large entry pages.
 
-## Suggested future expansion for this doc
-This draft should later be extended with:
-- supplier data model overview
-- receipt/posting sequence diagram
-- payment-run/export format notes
-- Paperflow intake flow map
-- UBL import expectations and field mapping
-- AP smoke-test checklist
+## Troubleshooting and verification
+### If supplier orders or receipts behave incorrectly
+Inspect first:
+- `ordre.php`
+- `modtag.php`
+- `ordreliste.php`
+- helper code under `orderIncludes/`
+
+Check for:
+- receipt and posting no longer lining up
+- order-line changes not propagating into inventory/accounting state
+- partially received orders getting stuck between statuses
+
+### If payment runs or AP reports are wrong
+Inspect first:
+- `betalinger.php`
+- `betalingsliste.php`
+- `rapport.php`
+
+Check for:
+- stale open items feeding a payment run
+- supplier bank/master data missing from `kreditorkort.php`
+- report output no longer matching payment selection state
+
+### If imported supplier documents are duplicated or incomplete
+Inspect first:
+- `ublimport.php`
+- `scanAttachments/`
+- supplier/order creation helpers reached from intake flows
+
+Check for:
+- duplicate supplier or order creation
+- partial OCR/intake rows that never become a usable order
+- imported document fields no longer mapping into the expected creditor/order data
+
+### Post-change verification
+After creditor changes, verify at least:
+- `kreditorkort.php` still saves correctly
+- one supplier order can be opened and edited
+- one receipt path works in a safe test case
+- one payment/open-item/report path still reflects the expected supplier state

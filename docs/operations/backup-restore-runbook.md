@@ -1,6 +1,5 @@
 # Backup and restore runbook
 
-Status: draft
 Audience: ops, senior maintainers
 
 This runbook summarizes how backup and restore appear to work in the current SALDI codebase and what to validate before using them in production.
@@ -16,7 +15,7 @@ Backup/restore in SALDI is a privileged, shell-driven workflow. It assumes:
 Do not test restore first in production.
 
 ## Main artifacts and temp paths
-Observed backup artifacts include:
+Current backup artifacts include:
 - `temp/backup.info`
 - `temp/<db>.sql`
 - `temp/<db>_<timestamp>.tar`
@@ -33,7 +32,7 @@ Deleted/retired accounts may also be archived under:
 - `nedlagte_regnskaber/<db>/`
 
 ## External tool dependencies
-Observed tool dependencies include:
+Current tool dependencies include:
 - `pg_dump` / `mysqldump`
 - `psql` / `mysql`
 - `tar`
@@ -118,6 +117,13 @@ Symptoms:
 - inconsistent state after restore
 - active sessions point at stale data
 - locks/conflicts during DB replacement
+
+## If a restore attempt goes wrong
+- stop further restore attempts until the failing artifact, tool path, or privilege issue is understood
+- do not continue using a partially restored environment as if it were production-safe
+- restore the last known-good code/config first if the issue is clearly code-only
+- use a validated backup to rebuild the environment if DB replacement or import partially succeeded
+- rerun login, one finance path, one module path, and one integration/log path before reopening the system
 
 ## Safe maintenance guidance
 - Keep backup/restore docs and admin behavior aligned when changing paths or tooling.

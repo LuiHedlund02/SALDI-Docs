@@ -1,6 +1,5 @@
 # Deployment and troubleshooting
 
-Status: draft
 Audience: ops, maintainers, senior developers
 
 ## Deployment model
@@ -51,7 +50,7 @@ These tools are used across:
 - integrations and sync jobs
 
 ## Backup and restore concerns
-Observed behavior suggests:
+Current behavior suggests:
 - backup/restore is shell-driven and path-sensitive
 - restore may rebuild or replace DB state
 - users may need to be logged out for restore flows
@@ -145,3 +144,11 @@ Before declaring an environment healthy:
 - one backup flow works
 - one PDF/document flow works
 - one API/integration log path is verified
+
+## Rollback triggers for deploy/config incidents
+Consider immediate rollback or environment isolation when:
+- login or bootstrap fails across multiple accounts
+- document/PDF generation is down for invoicing-critical flows
+- backup/restore artifacts stop being trustworthy
+- API or remote-booking auth breaks for production callers
+- temp/log path failures prevent diagnosis of a production issue
