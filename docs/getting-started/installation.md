@@ -40,17 +40,19 @@ The installer/runtime also requires write access to:
 
 Why:
 - `includes/connect.php` is generated during install
-- `temp/` is used for logs, temporary files, and backups
-- `logolib/` stores uploaded logos/assets
+- `temp/` is used for logs, temporary files, backups, and per-account runtime artifacts under `temp/$db/`
+- `logolib/` stores uploaded logos/assets and related visual assets used by the runtime
 
 ## Generated files and runtime artifacts
 Generated during install/runtime:
 - `includes/connect.php` — created by the installer
 - temp test files such as `temp/test.txt`
 - backup/restore artifacts under `temp/`
+- per-account temp/log directories such as `temp/$db/` created on demand during runtime
 
-Important note:
-If `includes/connect.php` already exists, the app may treat the installation as already completed.
+Important notes:
+- if `includes/connect.php` already exists, the app may treat the installation as already completed
+- `index/index.php` also deletes a zero-length `includes/connect.php` before redirecting back to the installer path
 
 ## Database support
 SALDI supports:
@@ -109,7 +111,7 @@ After installation:
 4. create the first real accounting/company account (`regnskab`) if required by the flow
 5. select/show the created account and continue setup
 
-Based on the legacy install text, the first-time flow may involve creating the initial database/admin and then creating the first usable account from the admin area.
+This flow was locally verified in the audit environment: installer -> login as the master account -> administration menu -> create a child/company account -> log in to the created account.
 
 ## Common installation problems
 - missing `temp/` or `logolib/`

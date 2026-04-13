@@ -8,7 +8,9 @@ Use this as the short go/no-go checklist immediately after a deploy.
 - [ ] Login works
 - [ ] Logout works
 - [ ] App does not redirect to installer unexpectedly
+- [ ] `includes/connect.php` is present, non-empty, and environment-correct
 - [ ] `temp/` and `logolib/` are writable
+- [ ] `temp/$db/` can be created/written during runtime
 - [ ] One shared-runtime page loads
 - [ ] One report or finance page loads
 
@@ -42,6 +44,7 @@ Use this as the short go/no-go checklist immediately after a deploy.
 - [ ] `includes/connect.php` is correct
 - [ ] admin tool paths are valid
 - [ ] one backup-related path still works
+- [ ] backup produces an `.sdat` artifact and the expected copy under `temp/backup/<db>/`
 - [ ] rollback owner and last good backup are known
 
 ## Stop and rollback if

@@ -26,7 +26,9 @@ The `temp/` directory is especially important because it is used for:
 ## Generated/config files
 Important generated/runtime files include:
 - `includes/connect.php`
-- temp backup artifacts such as `*.sql`, `*.tar`, `*.tar.gz`, `*.sdat`
+- temp backup artifacts such as `temp/backup.info`, `*.sql`, `*.tar`, `*.tar.gz`, `*.sdat`
+- restore scratch paths such as `temp/<db>/` and nested extracted content like `temp/<db>/temp/`
+- persistent backup copies under `temp/backup/<db>/`
 - retired/deleted-account backups under `nedlagte_regnskaber/`
 
 A stale or incorrect `includes/connect.php` can also interfere with the installer and startup flow.
@@ -56,6 +58,7 @@ Current behavior suggests:
 - users may need to be logged out for restore flows
 - DB admin rights are assumed for some operations
 - artifacts are unpacked/written into `temp/` before import
+- restore accepts `.sdat` and `.sql` inputs and stages work under `temp/<db>/`
 
 Treat backup/restore as privileged operations and test them in a non-production environment first.
 
@@ -69,6 +72,8 @@ Examples of operational logging inferred from the repo:
 When debugging, check:
 - repo-root `temp/`
 - `temp/$db/`
+- `temp/backup/<db>/`
+- extracted restore scratch content under `temp/$db/temp/` when restore/unpack is involved
 - any module-specific temp/log files referenced by the code path you are testing
 
 ## Common failure categories

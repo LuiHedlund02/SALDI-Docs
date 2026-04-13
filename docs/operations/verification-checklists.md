@@ -12,6 +12,7 @@ Use these checklists after risky changes, deployments, restores, or environment 
 - [ ] `temp/` is writable
 - [ ] `logolib/` is writable
 - [ ] New logs can be written under `temp/` or `temp/$db/`
+- [ ] `includes/connect.php` is non-empty and matches the active environment
 
 If this fails, inspect:
 - `includes/connect.php`
@@ -123,6 +124,10 @@ Run this after host moves, config changes, or ops work.
 - [ ] `includes/connect.php` is correct
 - [ ] Tool paths in admin settings are valid
 - [ ] One backup-adjacent path works
+- [ ] Backup creates `temp/<db>_<timestamp>.sdat`
+- [ ] Backup also leaves a persistent copy under `temp/backup/<db>/`
+- [ ] `temp/$db/` can be created and written during runtime/restore work
+- [ ] Restore inputs are limited to supported file types (`.sdat` / `.sql`)
 - [ ] Temp scratch space is sufficient
 - [ ] A restore test plan exists before any production restore is attempted
 
@@ -131,7 +136,7 @@ If this fails, inspect:
 - `admin/backup.php`
 - `admin/restore.php`
 - shell access to `pg_dump` / `mysqldump`, `psql` / `mysql`, `gzip`, `gunzip`, `tar`
-- free space and ownership under `temp/`
+- free space and ownership under `temp/`, `temp/$db/`, and `temp/backup/<db>/`
 
 ## Practical rule
 You do not need every checklist for every change. Choose the sections touched by the work. For high-risk releases, run at least:
