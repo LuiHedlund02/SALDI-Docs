@@ -7,6 +7,10 @@ Audience: maintainers, finance-support developers, reviewers, implementers
 
 A key design detail is that many workflows in this module are driven by the active financial year stored in `grupper` with `art = 'RA'`.
 
+Provenance:
+- **Verified locally**: `finans/kladdeliste.php` and `finans/regnskab.php` load in the audit runtime after login
+- **Code-inferred**: posting, VAT, reconciliation, and deeper accounting-side effects below were not fully executed end-to-end in the local verification pass
+
 ## What belongs to this module
 Current responsibilities include:
 - cash journal entry and editing

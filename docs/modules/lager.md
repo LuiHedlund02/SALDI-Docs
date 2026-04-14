@@ -5,6 +5,10 @@ Audience: maintainers, inventory-support developers, implementers
 ## Purpose
 `lager/` is SALDI’s inventory and product-management module. It handles product master data, stock levels, receiving, counting, corrections, warehouse transfers, pricing, labels, status views, and inventory history/traceability.
 
+Provenance:
+- **Verified locally**: `lager/varer.php` loads in the audit runtime after login, and the legacy redirect path was verified/fixed during local smoke work
+- **Code-inferred**: receiving, counting, transfers, and stock-side side effects below still come primarily from repo inspection
+
 A notable architectural trait is that this module contains both:
 - legacy top-level pages
 - a newer list/navigation flow under `lager/lister/`

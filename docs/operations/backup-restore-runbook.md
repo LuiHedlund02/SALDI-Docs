@@ -2,6 +2,8 @@
 
 Audience: ops, senior maintainers
 
+> Provenance note: unless a statement is explicitly marked **verified locally**, runtime/tool/path details in this page are primarily **code-inferred** and should still be rechecked on the target host.
+
 This runbook summarizes how backup and restore appear to work in the current SALDI codebase and what to validate before using them in production.
 
 ## Important warning

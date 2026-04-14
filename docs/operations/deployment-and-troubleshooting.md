@@ -2,6 +2,8 @@
 
 Audience: ops, maintainers, senior developers
 
+> Provenance note: unless a statement is explicitly marked **verified locally**, runtime/tool/path details in this page are primarily **code-inferred** and should still be rechecked on the target host.
+
 ## Deployment model
 SALDI is deployed as a source-as-webroot PHP application. There is no obvious CI/CD or bundling pipeline in the repository.
 

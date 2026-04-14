@@ -2,6 +2,8 @@
 
 Audience: maintainers, release owners, reviewers
 
+> Provenance note: these checklists describe **verification targets**, not guarantees. Unless a point is explicitly marked **verified locally**, it should be treated as a runtime check to perform on the active environment.
+
 Use these checklists after risky changes, deployments, restores, or environment moves.
 
 ## 1. Platform baseline checklist

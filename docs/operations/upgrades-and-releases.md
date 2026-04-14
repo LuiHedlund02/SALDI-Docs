@@ -2,6 +2,8 @@
 
 Audience: ops, maintainers, release owners
 
+> Provenance note: unless a statement is explicitly marked **verified locally**, runtime/tool/path details in this page are primarily **code-inferred** and should still be rechecked on the target host.
+
 This page provides a practical release/upgrade checklist for the current SALDI deployment model.
 
 ## Important context

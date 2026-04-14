@@ -2,6 +2,8 @@
 
 Audience: ops, maintainers
 
+> Provenance note: unless a statement is explicitly marked **verified locally**, runtime/tool/path details in this page are primarily **code-inferred** and should still be rechecked on the target host.
+
 Use this checklist when changing environment-specific configuration after install, restore, or server moves.
 
 ## Writable directories

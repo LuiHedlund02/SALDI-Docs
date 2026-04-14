@@ -2,6 +2,8 @@
 
 Audience: release owners, ops
 
+> Provenance note: this sheet lists **verification targets**, not guarantees. Unless noted otherwise, individual runtime/tool/path expectations remain **code-inferred** until checked on the active host.
+
 Use this as the short go/no-go checklist immediately after a deploy.
 
 ## Always run

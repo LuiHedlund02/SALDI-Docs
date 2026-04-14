@@ -118,3 +118,11 @@ These existing repo docs are still valuable, but they do not all represent canon
 - Mark legacy vs current UI paths when both exist.
 - Link to code-adjacent specs where they already exist.
 - When code changes affect setup, schema, integrations, or workflows, update docs in the same PR.
+
+## Documentation confidence labels
+Use these lightweight labels when a section benefits from provenance clarification:
+- **Verified locally** — confirmed by running the flow in the audit environment
+- **Code-inferred** — derived from code reading and repository inspection only
+- **Legacy/reference** — historical or supporting material that may not describe the active runtime exactly
+
+Use the label once per section or note, not on every sentence.

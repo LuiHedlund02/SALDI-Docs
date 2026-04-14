@@ -7,6 +7,10 @@ Audience: maintainers, booking/rental developers, support
 
 The module uses a shared PHP backend plus page-specific JavaScript UIs.
 
+Provenance:
+- **Verified locally**: `rental/index.php` loads in the audit runtime after login once path/bootstrap issues were corrected
+- **Code-inferred**: booking lifecycle, remote/public booking behavior, and order/payment side effects below were not fully exercised end-to-end in the local verification pass
+
 ## Main entry points
 - `rental.php` — central backend and API surface
 - `api/api.js` — shared frontend wrapper for rental endpoints

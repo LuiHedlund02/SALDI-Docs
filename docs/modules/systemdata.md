@@ -7,6 +7,10 @@ Audience: maintainers, admins, implementers
 
 This area is configuration-heavy and has broad cross-module impact.
 
+Provenance:
+- **Verified locally**: `systemdata/syssetup.php` loads in the audit runtime after login
+- **Code-inferred**: most configuration semantics, fiscal-year side effects, and import/export behavior below still come from repo inspection rather than deeper live workflow execution
+
 ## Main navigation
 Common entry points:
 - `top.php`

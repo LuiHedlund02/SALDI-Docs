@@ -5,6 +5,10 @@ Audience: maintainers, finance-support developers, integrators
 ## Purpose
 `debitor/` is the customer and accounts-receivable domain inside SALDI. It covers more than customer records: it includes debtor master data, order and invoice flows, posting, payment handling, reminders/collections, CRM features, commission/MySale behavior, rental hooks, POS-related flows, and document/export paths.
 
+Provenance:
+- **Verified locally**: `debitor/debitor.php` and `debitor/ordreliste.php` load in the audit runtime after login
+- **Code-inferred**: most workflow/detail statements below still come from repo inspection rather than full end-to-end business-flow execution
+
 ## What belongs to this module
 Current responsibilities include:
 - customer master data and debtor lists

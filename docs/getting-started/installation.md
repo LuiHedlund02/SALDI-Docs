@@ -4,6 +4,10 @@ Audience: deployers, maintainers
 
 This page documents the practical installation flow for SALDI based on the current repository and installer behavior.
 
+Provenance:
+- **Verified locally**: installer redirect, successful install, `includes/connect.php` creation, master login, admin-menu access, child-account creation, and login to the created account
+- **Code-inferred**: wider browser/tooling assumptions and host-specific binary expectations that were not all exercised end-to-end in the local audit runtime
+
 ## Deployment model
 SALDI is deployed as a classic PHP application served directly from the source tree/webroot. There is no modern JS build pipeline visible in the repository.
 
