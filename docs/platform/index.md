@@ -4,6 +4,10 @@ Audience: maintainers, frontend/backend developers
 
 The `index/` area provides the main application shell: login, dashboard routing, and iframe-based navigation.
 
+Provenance:
+- **Verified locally**: installer redirect behavior, successful login, master-admin menu access, shell/dashboard loading, and in-shell loading of finance/debtor/inventory/rental/admin entry pages in the audit runtime
+- **Code-inferred**: broader routing assumptions, legacy deep-link compatibility, and some shell/module coupling details still come primarily from repo inspection
+
 ## Purpose
 This area is responsible for:
 - login and first-entry behavior
@@ -24,6 +28,8 @@ It is not a modern SPA shell; it is a stateful legacy PHP shell that coordinates
 - `install.php` — installer entry when configuration is missing
 
 ## Login and install flow
+**Verified locally**: missing config returns users to the installer path, and successful login forwards into the shell.
+
 A typical first-entry path is:
 1. user opens `index/index.php`
 2. `index.php` checks whether `../includes/connect.php` exists and is non-empty
@@ -53,6 +59,8 @@ Operationally this means:
 - login/session regressions can surface as module-load failures later in the shell
 
 ## Shell runtime model
+**Verified locally**: the outer shell in `main.php` can load dashboard, finance, debtor, inventory, rental, and backup/admin entry pages after login in the audit environment.
+
 Typical shell behavior includes:
 - authenticated session bootstrap through shared includes
 - loading the outer shell in `main.php`
@@ -63,6 +71,8 @@ Typical shell behavior includes:
 The outer shell is responsible for top-level navigation, while many real module pages assume the shell/session context already exists.
 
 ## Iframe navigation model
+**Code-inferred with partial local confirmation**: menu-driven iframe loading was verified locally for several core routes, but direct deep-link compatibility still depends on page-specific behavior.
+
 The navigation model is legacy but consistent:
 - menu entries call `update_iframe("/path/to/page.php")`
 - the outer shell updates the iframe source and URL hash together
@@ -81,6 +91,8 @@ Representative shell targets include:
 - system/admin: `/systemdata/kontoplan.php`, `/systemdata/syssetup.php`, `/admin/backup.php`
 
 ## CSP and inline-script handling
+**Verified locally**: the login shell emits CSP nonce handling and still loads correctly in the audit runtime.
+
 The login shell uses explicit CSP nonce handling.
 
 Practical consequences:

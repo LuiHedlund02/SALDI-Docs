@@ -5,6 +5,10 @@ Audience: maintainers, backend developers, reviewers
 ## Purpose
 `includes/` is the shared runtime layer for SALDI. It is not a small helper folder; it acts as the platform core used by many modules across the monolith.
 
+Provenance:
+- **Verified locally**: `online.php` participates directly in login/session bootstrap, reads/writes `online` state, and affects whether module entry pages load correctly in the audit runtime
+- **Code-inferred**: most helper-surface descriptions, error-side-effect claims, and external-tool coupling details below still come from static inspection of the repository
+
 This area provides:
 - database access and query wrappers
 - session and user/account bootstrap
@@ -31,6 +35,8 @@ The result is a stateful bootstrap model where include order matters.
 ### `online.php`
 Primary runtime/bootstrap include used by many pages.
 
+**Verified locally**: this include participates directly in request bootstrap, reads session-linked rows from `online`, updates `online.logtime`, and can block page loading when runtime context is wrong.
+
 Current runtime responsibilities:
 - reads runtime context from the `online` table using the active session ID
 - loads account/user state such as database, rights, language, and current accounting year
@@ -45,6 +51,8 @@ Treat `online.php` as part of the request lifecycle, not as a pure helper includ
 ### `db_query.php`
 Shared database abstraction and error-handling layer.
 
+**Code-inferred with partial local confirmation**: temp/log path behavior and query-side logging were exercised indirectly during local runtime debugging, but the broader failure/alert/mail paths remain code-inferred.
+
 Current runtime responsibilities:
 - connects to PostgreSQL or MySQLi depending on configured DB type
 - exposes `db_connect()`, `db_select()`, `db_modify()`, `db_close()`, and related helpers
@@ -57,6 +65,8 @@ This is not a thin DB wrapper. Query failures can change request flow.
 
 ### `std_func.php`
 Large shared utility hub used broadly across the system.
+
+**Code-inferred**: this section is based mainly on static inspection; local verification only confirmed that path/bootstrap behavior around `std_func.php` can affect many entry pages at once.
 
 Common responsibilities:
 - formatting and conversion helpers
